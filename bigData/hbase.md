@@ -28,13 +28,11 @@ store包括位于内存中的memstore和位于磁盘的storefile，写操作先�
 当一个region中所有storefile的大小和数量超过一定阀值后，会把当前的region分割为两个，并由hmaster分配到相应的regionserver服务器，实现负载均衡
 客户端检索数据，先找memstore(主要作用是写数据，但是也可以分担读取压力)，找不到再找storefile
 #### 热点问题
-热点的危害：
+###### 热点的危害：
 大量访问会使热点region所在的单个主机负载过大，引起性能下降甚至region不可用。
 
-
-
-热点产生原因：
-
+###### 热点产生原因：
 有大量连续编号的row key  ==>  大量row key相近的记录集中在个别region
 
  ==>  client检索记录时,对个别region访问过多  ==>  此region所在的主机过载  ==>  热点
+###### 避免方法和优缺点
