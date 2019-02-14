@@ -21,7 +21,7 @@ RegionServer负责切分在运行过程中变得过大的Region
 HBase自动把表水平划分成多个区域（region），每个region会保存一个表里面某段连续（关系到rowkey的设计，rowkey的设计关系到查询效率的高低）的数据
 每个表一开始只有一个region，随着数据不断插入表，region会不断增大，当增大到一个阀值后，region就会等分为两个新的region（裂变）
 当table中的行不断增多，就会有越来越多的region，这样一张完整的表就被保存在多个Region甚至多个RegionServer上
-MemStore与storefile(StoreFile对应HFile，StoreFile以HFile格式保存在HDFS上)（一个store对应一个列族CF）
+#### MemStore与storefile(StoreFile对应HFile，StoreFile以HFile格式保存在HDFS上)（一个store对应一个列族CF）
 一个region由多个store组成
 store包括位于内存中的memstore和位于磁盘的storefile，写操作先写入memstore，当memstore中的数据量达到某个阀值，hregionserver会启动flashcache进程写入storefile（可以手动启动flashcache进程写入storefile），每次写入形成单独的一个storefile
 当storefile文件数量增长到一个阀值后，系统会进行合并（minor（少个文件合并，不会对系统进程影响太大，因此设置自动开启），major（多个文件合并，文件数量过多时，合并会影响系统进程，导致其他进程阻塞，因此设置定时开启，读写数据少的时候开启）），在合并过程中会进行版本合并和删除工作（major）（在hbase表中设置版本数，如果为一，则表示只能存一条版本最新的，老版本并不会直接删除，而是会加上失效的标签，再进行major的时候，才会合并和删除），形成更大的storefile
